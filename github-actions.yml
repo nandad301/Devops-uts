@@ -1,19 +1,26 @@
-stages:
-  - build
-  - test
+name: CI Pipeline
 
-build:
-  stage: build
-  script:
-    - npm install
-    - npm run build
-  artifacts:
-    paths:
-      - build/
+# Trigger pipeline hanya saat ada push ke branch development
+on:
+  push:
+    branches:
+      - development
 
-test:
-  stage: test
-  script:
-    - npm run test
-  only:
-    - development
+jobs:
+  build-and-test:
+    runs-on: windows-latest  # Menggunakan runner Windows
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run unit tests
+        run: npm test
